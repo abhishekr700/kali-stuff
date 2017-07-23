@@ -1,0 +1,31 @@
+Link: https://unix.stackexchange.com/questions/60078/find-out-which-modules-are-associated-with-a-usb-device
+
+Suggested : 
+Finding the Kernel Driver(s)
+	The victim device
+
+	$ lsusb 
+	Bus 010 Device 002: ID 046d:c01e Logitech, Inc. MX518 Optical Mouse
+	Bus 010 Device 003: ID 051d:0002 American Power Conversion Uninterruptible Power Supply
+
+	We're going to try to find out what driver is used for the APC UPS. Note that there are two answers to this question:
+	 The driver that the kernel would use, and the driver that is currently in use. Userspace can instruct the kernel to use
+	 a different driver (and in the case of my APC UPS, nut has).
+
+	Method 1: Using usbutils (easy)
+
+	The usbutils package (on Debian, at least) includes a script called usb-devices. If you run it, it outputs information about the devices on the system, including which driver is used:
+
+	$ usb-devices
+	⋮
+	T:  Bus=10 Lev=01 Prnt=01 Port=01 Cnt=02 Dev#=  3 Spd=1.5 MxCh= 0
+	D:  Ver= 1.10 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 8 #Cfgs=  1
+	P:  Vendor=051d ProdID=0002 Rev=01.06
+	S:  Manufacturer=American Power Conversion
+	S:  Product=Back-UPS RS 1500 FW:8.g9 .D USB FW:g9 
+	S:  SerialNumber=XXXXXXXXXXXX  
+	C:  #Ifs= 1 Cfg#= 1 Atr=a0 MxPwr=24mA
+	I:  If#= 0 Alt= 0 #EPs= 1 Cls=03(HID  ) Sub=00 Prot=00 Driver=usbfs
+	⋮
+
+	Note that this lists the current driver, not the default one. There isn't a way to find the default one.
