@@ -1,0 +1,32 @@
+Tried to mount ex4 partition in Windows using ext2fs utility.
+Turns out it corrupts the Linux ext4 filesystems , even if you have that tool installed( Yes! Without using)
+
+Steps :
+1. Uninstall that program, kill that bitch !
+2. Boot to Ubuntu/Linux distro.
+3. Run 
+	sudo fdisk -l
+   This will give a list of partitions.
+4. Start fs check using,
+	sudo fsck.ext4 -v /dev/xxx 
+   Replace xxx by partition name.
+5. Even though kali told me that it was a superblock error, I'm not sure about that
+   Got an option to fix, press 'a' to fix all.
+6. Kali booted successfully.
+
+Note: The default "e2fsck" program provided in Ubuntu does not support a ext4 feature called "metadata_csum".
+      It supports this feature from v1.43 onwards
+      Download : http://packages.ubuntu.com/yakkety/e2fsprogs
+		 http://packages.ubuntu.com/yakkety/e2fslibs
+      Then install using 
+		sudo dpkg -i e2fs{libs,progs}_*_$(dpkg --print-architecture).deb
+      Run twice if first time one of the packages fail.
+
+Link: https://askubuntu.com/questions/747656/ext4-broken-file-system-on-ubuntu-14-04-4
+
+
+Ques: Why does this happen ?
+Ans :
+	Link: https://askubuntu.com/questions/849872/how-can-i-prevent-windows-10-from-corrupting-the-ext4-superblock-every-time
+	The problem is related to ext2fsd which obviously does not support the 64bit feature and/or metadata_csum feature. It is 
+	sufficient to have ext2fsd installed to corrupt your ext4 partitions. No need for them to be mounted in Windows.
